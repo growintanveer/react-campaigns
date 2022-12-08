@@ -41,8 +41,6 @@ function App() {
   };
 
   const handleDateFilter = dateObj => {
-    // console.log("APP.JS ----> dateObj")
-    // console.log(dateObj)
     setDateFilter((prevState) => {
       return {...prevState, ...dateObj}
     })
@@ -50,8 +48,6 @@ function App() {
 
 
   const handleNameFilter = name => {
-    // console.log("APP.JS ----> name")
-    // console.log(name)
     setNameFilter(name)
   }
 
