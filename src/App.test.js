@@ -94,17 +94,8 @@ test("should show data grid", () => {
 
 // 
 describe("Tests for CampaignList data", () => {
-
-  beforeAll(() => {
-    jest.spyOn(window, "fetch").mockImplementation(mockFetch);
-  })
   
-  afterAll(() => {
-    jest.restoreAllMocks()
-  });
-
   it("should have search by entered start and end date", async () => {
-    // await act(async () => render(<App />));
     render(<App />);
     expect((await screen.findByRole('grid')).getAttribute('aria-rowcount')).toBe("4");
   });
