@@ -1,0 +1,15 @@
+.grid-header {
+    background-color: blueviolet;
+    font-weight: 600 !important;
+    color: white;
+    border: none !important;
+}
+
+
+.MuiDataGrid-columnHeaderTitle {
+    font-weight: 600 !important;
+}
+
+.MuiDataGrid-columnSeparator {
+    display: none !important;
+}
