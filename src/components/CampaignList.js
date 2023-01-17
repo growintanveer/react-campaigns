@@ -99,7 +99,7 @@ export default function CampaignList(props) {
 
     useEffect(() => {
 
-      if((props.dateFilter.startDate !== null && props.dateFilter.endDate !== null) || props.nameFilter !== null) {
+      if((dateFilter.startDate !== null && dateFilter.endDate !== null) || nameFilter !== null) {
         setIsFilterApplied(true);
       }
 
@@ -125,7 +125,7 @@ export default function CampaignList(props) {
         }
       }
 
-    }, [loading, campaignList, filteredCampaignsList, isFilterApplied])
+    }, [loading, campaignList, filteredCampaignsList, isFilterApplied, dateFilter, nameFilter])
 
     useEffect(() => {
       setCampaigns(previousCampaigns => [...previousCampaigns, ...props.campaignData])
@@ -133,12 +133,12 @@ export default function CampaignList(props) {
 
     useEffect(() => {
         setIsFilterApplied(true);
-        if(props.dateFilter.startDate === null && props.dateFilter.endDate === null) {
+        if(dateFilter.startDate === null && dateFilter.endDate === null) {
           setIsFilterApplied(false);
         }
         dispatch({ type: campaignListContants.FILTER_CAMPAIGN_BY_DATE, data: { name: nameFilter, dateRange: dateFilter  }});
 
-    }, [nameFilter, dateFilter, props.dateFilter.startDate, props.dateFilter.endDate, dispatch]);
+    }, [nameFilter, dateFilter, dateFilter.startDate, dateFilter.endDate, dispatch]);
 
     useEffect(() => {
       setIsFilterApplied(true);
@@ -148,7 +148,7 @@ export default function CampaignList(props) {
       }
       dispatch({type: campaignListContants.FILTER_CAMPAIGN_BY_NAME, data: { name: nameFilter, dateRange: dateFilter  }});
 
-  }, [nameFilter, dispatch]);
+  }, [nameFilter, dispatch, dateFilter]);
 
     return (
         <Box sx={{ height: 600, 
