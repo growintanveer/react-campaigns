@@ -38,34 +38,4 @@ const CampaignLists = (state = initialState, action) => {
     }
 };
 
-
-// const getFilteredCampaigns = (state, action) => {
-//     let filteredCampaigns = [];
-//     if(!action.data.name && (action.data.dateRange.startDate && action.data.dateRange.endDate)) {
-//         filteredCampaigns = state.campaignList.filter((campaign) => {
-//             return Date.parse(campaign.startDate) >= Date.parse(action.data.dateRange.startDate) && 
-//                     Date.parse(campaign.endDate) <= Date.parse(action.data.dateRange.endDate)
-//         });
-//     }
-
-//     if(action.data.name && (action.data.dateRange.startDate && action.data.dateRange.endDate)) {
-//         filteredCampaigns = state.campaignList.filter((campaign) => {
-//             return Date.parse(campaign.startDate) >= Date.parse(action.data.dateRange.startDate) && 
-//                     Date.parse(campaign.endDate) <= Date.parse(action.data.dateRange.endDate) &&
-//                     campaign.name.toLowerCase().includes(action.data.name.toLowerCase())
-//         });
-//     }
-    
-//     if(action.data.name && !(action.data.dateRange.startDate && action.data.dateRange.endDate)) {
-//         filteredCampaigns = state.campaignList.filter((campaign) => {
-//             return campaign.name.toLowerCase().includes(action.data.name.toLowerCase())
-//         });
-//     }
-
-//     console.log("filteredCampaigns", filteredCampaigns);
-//     console.log("state", state);
-    
-//     return filteredCampaigns && filteredCampaigns.length > 0 ? filteredCampaigns : state.campaignList;
-// };
-
 export default CampaignLists;
