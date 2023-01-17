@@ -157,9 +157,9 @@ export default function CampaignList(props) {
                   'columnHeaderTitle': {fontWeight: '600'},
                   'columnSeparator': { borderWidth: 0 }
                 }}>
-            { !campaigns && <CircularProgress /> }
-            { campaigns &&  campaigns.length === 0 && <p>No campaigns found.</p>}
-            { campaigns && campaigns.length > 0 && <DataGrid
+            { loading && <CircularProgress /> }
+            { !loading && campaigns &&  campaigns.length === 0 && <p>No campaigns found.</p>}
+            { !loading && campaigns && campaigns.length > 0 && <DataGrid
                 initialState={{
                     columns: {
                     columnVisibilityModel: {

@@ -19,6 +19,8 @@ const campaignListFilterRequest = (data) => ({
 
 const getFilteredCampaigns = (campaignList, filters) => {
     let filteredCampaigns = [];
+    let hasFilter = false;
+
     if(!filters.name && (filters.dateRange.startDate && filters.dateRange.endDate)) {
         filteredCampaigns = campaignList.filter((campaign) => {
             return Date.parse(campaign.startDate) >= Date.parse(filters.dateRange.startDate) && 
@@ -39,5 +41,16 @@ const getFilteredCampaigns = (campaignList, filters) => {
             return campaign.name.toLowerCase().includes(filters.name.toLowerCase())
         });
     }    
-    return filteredCampaigns && filteredCampaigns.length > 0 ? filteredCampaigns : campaignList;
+
+    if(filters.name !== '' || 
+        (
+            JSON.stringify(filters.dateRange) !== '{}' && (filters.dateRange && 
+            (filters.dateRange.startDate !== null && filters.dateRange.startDate !== '') && 
+            (filters.dateRange.endDate !== null && filters.dateRange.endDate !== '')))) {
+        hasFilter = true;
+    } else {
+        hasFilter = false;
+    }
+
+    return filteredCampaigns && filteredCampaigns.length > 0 ? filteredCampaigns : (!hasFilter ? campaignList : []);
 };
