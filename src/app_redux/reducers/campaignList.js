@@ -7,9 +7,6 @@ const initialState = {
     error: null
 };
 
-let filteredCampaigns = [];
-
-
 const CampaignLists = (state = initialState, action) => {
     switch (action.type) {
         case campaignListContants.GET_CAMPAIGN_LIST_REQUEST:
@@ -31,18 +28,10 @@ const CampaignLists = (state = initialState, action) => {
                 loading: false,
                 error: action.error
             };
-        case campaignListContants.FILTER_CAMPAIGN_BY_DATE:
-            filteredCampaigns = getFilteredCampaigns(state, action);
+        case campaignListContants.GET_FILTERED_CAMPAIGN:
             return {
                 ...state,
-                filteredCampaignsList: filteredCampaigns
-            };
-
-        case campaignListContants.FILTER_CAMPAIGN_BY_NAME:
-            filteredCampaigns = getFilteredCampaigns(state, action);
-            return {
-                ...state,
-                filteredCampaignsList: filteredCampaigns
+                filteredCampaignsList: action.data
             };
         default:
             return state;
@@ -50,33 +39,33 @@ const CampaignLists = (state = initialState, action) => {
 };
 
 
-const getFilteredCampaigns = (state, action) => {
-    let filteredCampaigns = [];
-    if(!action.data.name && (action.data.dateRange.startDate && action.data.dateRange.endDate)) {
-        filteredCampaigns = state.campaignList.filter((campaign) => {
-            return Date.parse(campaign.startDate) >= Date.parse(action.data.dateRange.startDate) && 
-                    Date.parse(campaign.endDate) <= Date.parse(action.data.dateRange.endDate)
-        });
-    }
+// const getFilteredCampaigns = (state, action) => {
+//     let filteredCampaigns = [];
+//     if(!action.data.name && (action.data.dateRange.startDate && action.data.dateRange.endDate)) {
+//         filteredCampaigns = state.campaignList.filter((campaign) => {
+//             return Date.parse(campaign.startDate) >= Date.parse(action.data.dateRange.startDate) && 
+//                     Date.parse(campaign.endDate) <= Date.parse(action.data.dateRange.endDate)
+//         });
+//     }
 
-    if(action.data.name && (action.data.dateRange.startDate && action.data.dateRange.endDate)) {
-        filteredCampaigns = state.campaignList.filter((campaign) => {
-            return Date.parse(campaign.startDate) >= Date.parse(action.data.dateRange.startDate) && 
-                    Date.parse(campaign.endDate) <= Date.parse(action.data.dateRange.endDate) &&
-                    campaign.name.toLowerCase().includes(action.data.name.toLowerCase())
-        });
-    }
+//     if(action.data.name && (action.data.dateRange.startDate && action.data.dateRange.endDate)) {
+//         filteredCampaigns = state.campaignList.filter((campaign) => {
+//             return Date.parse(campaign.startDate) >= Date.parse(action.data.dateRange.startDate) && 
+//                     Date.parse(campaign.endDate) <= Date.parse(action.data.dateRange.endDate) &&
+//                     campaign.name.toLowerCase().includes(action.data.name.toLowerCase())
+//         });
+//     }
     
-    if(action.data.name && !(action.data.dateRange.startDate && action.data.dateRange.endDate)) {
-        filteredCampaigns = state.campaignList.filter((campaign) => {
-            return campaign.name.toLowerCase().includes(action.data.name.toLowerCase())
-        });
-    }
+//     if(action.data.name && !(action.data.dateRange.startDate && action.data.dateRange.endDate)) {
+//         filteredCampaigns = state.campaignList.filter((campaign) => {
+//             return campaign.name.toLowerCase().includes(action.data.name.toLowerCase())
+//         });
+//     }
 
-    console.log("filteredCampaigns", filteredCampaigns);
-    console.log("state", state);
+//     console.log("filteredCampaigns", filteredCampaigns);
+//     console.log("state", state);
     
-    return filteredCampaigns && filteredCampaigns.length > 0 ? filteredCampaigns : state.campaignList;
-};
+//     return filteredCampaigns && filteredCampaigns.length > 0 ? filteredCampaigns : state.campaignList;
+// };
 
 export default CampaignLists;

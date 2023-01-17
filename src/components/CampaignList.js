@@ -7,11 +7,10 @@ import './CampaignList.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllCampaign } from '../app_redux/actions/campaignList';
+import { filterCampaign } from '../app_redux/actions/campaignFilter';
 
 import moment from 'moment';
 import { CircularProgress } from '@mui/material';
-import { campaignListContants } from '../app_redux/constants/campaignList';
-
 // let isFilterApplied = false;
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -104,7 +103,7 @@ export default function CampaignList(props) {
       }
 
       if(isFilterApplied) {
-        if(filteredCampaignsList.length > 0) {
+        if(filteredCampaignsList && filteredCampaignsList.length > 0) {
           let campaignData = filteredCampaignsList.map((value) => ({
             ...value,
             key: value.id
@@ -136,7 +135,7 @@ export default function CampaignList(props) {
         if(dateFilter.startDate === null && dateFilter.endDate === null) {
           setIsFilterApplied(false);
         }
-        dispatch({ type: campaignListContants.FILTER_CAMPAIGN_BY_DATE, data: { name: nameFilter, dateRange: dateFilter  }});
+        dispatch(filterCampaign({ name: nameFilter, dateRange: dateFilter  }));
 
     }, [nameFilter, dateFilter, dateFilter.startDate, dateFilter.endDate, dispatch]);
 
@@ -146,7 +145,7 @@ export default function CampaignList(props) {
       if(nameFilter === null) {
         setIsFilterApplied(false);
       }
-      dispatch({type: campaignListContants.FILTER_CAMPAIGN_BY_NAME, data: { name: nameFilter, dateRange: dateFilter  }});
+      dispatch(filterCampaign({ name: nameFilter, dateRange: dateFilter  }));
 
   }, [nameFilter, dispatch, dateFilter]);
 
