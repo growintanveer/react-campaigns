@@ -96,6 +96,19 @@ export default function CampaignList(props) {
         dispatch(getAllCampaign());
     }, [dispatch]);
 
+
+    const setCampaignData = (data) => {
+      if(data && data.length > 0) {
+        let campaignData = data.map((value) => ({
+          ...value,
+          key: value.id
+        }));
+        setCampaigns(campaignData)
+      } else {
+        setCampaigns([])
+      } 
+    };
+
     useEffect(() => {
 
       if((dateFilter.startDate !== null && dateFilter.endDate !== null) || nameFilter !== null) {
@@ -103,25 +116,9 @@ export default function CampaignList(props) {
       }
 
       if(isFilterApplied) {
-        if(filteredCampaignsList && filteredCampaignsList.length > 0) {
-          let campaignData = filteredCampaignsList.map((value) => ({
-            ...value,
-            key: value.id
-          }));
-          setCampaigns(campaignData)
-        } else {
-          setCampaigns([])
-        } 
+        setCampaignData(filteredCampaignsList);
       } else {
-        if(campaignList.length > 0) {
-          let campaignData = campaignList.map((value) => ({
-            ...value,
-            key: value.id
-          }));
-          setCampaigns(campaignData)
-        } else {
-          setCampaigns([])
-        }
+        setCampaignData(campaignList);
       }
 
     }, [loading, campaignList, filteredCampaignsList, isFilterApplied, dateFilter, nameFilter])
@@ -130,24 +127,27 @@ export default function CampaignList(props) {
       setCampaigns(previousCampaigns => [...previousCampaigns, ...props.campaignData])
     }, [props.campaignData]);
 
+    
     useEffect(() => {
         setIsFilterApplied(true);
-        if(dateFilter.startDate === null && dateFilter.endDate === null) {
+        if(JSON.stringify(props.dateFilter) === '{}' || (dateFilter.startDate === null && dateFilter.endDate === null)) {
           setIsFilterApplied(false);
         }
         dispatch(filterCampaign({ name: nameFilter, dateRange: dateFilter  }));
 
     }, [nameFilter, dateFilter, dateFilter.startDate, dateFilter.endDate, dispatch]);
 
+
     useEffect(() => {
       setIsFilterApplied(true);
 
-      if(nameFilter === null) {
+      if(!nameFilter) {
         setIsFilterApplied(false);
       }
       dispatch(filterCampaign({ name: nameFilter, dateRange: dateFilter  }));
 
-  }, [nameFilter, dispatch, dateFilter]);
+    }, [nameFilter, dispatch, dateFilter]);
+
 
     return (
         <Box sx={{ height: 600, 
