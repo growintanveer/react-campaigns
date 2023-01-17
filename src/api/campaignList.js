@@ -8,7 +8,7 @@ export const getCampaignList = () => {
     }
 
     return fetch(
-        `${appConfig.API_URL}/campaigns`,
+        `${appConfig.API_URL}/data.json`,
         requestObj
     ).then(handleResponse)
 };

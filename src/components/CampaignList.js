@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import Chip from '@mui/material/Chip';
@@ -9,7 +9,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllCampaign } from '../app_redux/actions/campaignList';
 
 import moment from 'moment';
+import { CircularProgress } from '@mui/material';
+import { campaignListContants } from '../app_redux/constants/campaignList';
 
+// let isFilterApplied = false;
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
@@ -78,70 +81,74 @@ const columns = [
 
 
 export default function CampaignList(props) {
+    const [isFilterApplied, setIsFilterApplied] = useState(false);
 
-    const [campaigns, setCampaigns] = React.useState([]);
-    let filteredCampaigns = [];
+    const [campaigns, setCampaigns] = useState([]);
 
     const campaignList = useSelector( (state) => state.campaignList.campaignList )
+    const filteredCampaignsList = useSelector((state) => state.campaignList.filteredCampaignsList);
     const loading = useSelector ((state) => state.campaignList.loading)
     const dispatch = useDispatch();
+
+    const { dateFilter, nameFilter } = props;
     
 
-    React.useEffect(() => {
+    useEffect(() => {
         dispatch(getAllCampaign());
-    }, []);
-    
-    React.useEffect(() => {
-      if(campaignList.length > 0) {
-        let campaignData = campaignList.map((value) => ({
-          ...value,
-          key: value.id
-        }));
-        setCampaigns(campaignData)
-      } else {
-        setCampaigns([])
+    }, [dispatch]);
+
+    useEffect(() => {
+
+      if((props.dateFilter.startDate !== null && props.dateFilter.endDate !== null) || props.nameFilter !== null) {
+        setIsFilterApplied(true);
       }
 
-    }, [loading])
-
-    React.useEffect(() => {
-      setCampaigns((prevState) => {
-        return [...prevState, ...props.campaignData]
-      })
-
-    }, [props.campaignData])                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-
-    if(!(JSON.stringify(props.dateFilter) === '{}') && (props.dateFilter.startDate && props.dateFilter.endDate)) {
-
-        if(!props.nameFilter) {
-          filteredCampaigns = campaigns.filter((campaign) => {
-            return Date.parse(campaign.startDate) >= Date.parse(props.dateFilter.startDate) && 
-                    Date.parse(campaign.endDate) <= Date.parse(props.dateFilter.endDate)
-          });
+      if(isFilterApplied) {
+        if(filteredCampaignsList.length > 0) {
+          let campaignData = filteredCampaignsList.map((value) => ({
+            ...value,
+            key: value.id
+          }));
+          setCampaigns(campaignData)
+        } else {
+          setCampaigns([])
+        } 
+      } else {
+        if(campaignList.length > 0) {
+          let campaignData = campaignList.map((value) => ({
+            ...value,
+            key: value.id
+          }));
+          setCampaigns(campaignData)
+        } else {
+          setCampaigns([])
         }
+      }
 
-        if(props.nameFilter) {
-          filteredCampaigns = campaigns.filter((campaign) => {
-            return Date.parse(campaign.startDate) >= Date.parse(props.dateFilter.startDate) && 
-                      Date.parse(campaign.endDate) <= Date.parse(props.dateFilter.endDate) &&
-                      campaign.name.toLowerCase().includes(props.nameFilter.toLowerCase())
-          });
-        }
+    }, [loading, campaignList, filteredCampaignsList, isFilterApplied])
 
+    useEffect(() => {
+      setCampaigns(previousCampaigns => [...previousCampaigns, ...props.campaignData])
+    }, [props.campaignData]);
+
+    useEffect(() => {
+        setIsFilterApplied(true);
         if(props.dateFilter.startDate === null && props.dateFilter.endDate === null) {
-          filteredCampaigns = [...campaigns];      
+          setIsFilterApplied(false);
         }
+        dispatch({ type: campaignListContants.FILTER_CAMPAIGN_BY_DATE, data: { name: nameFilter, dateRange: dateFilter  }});
 
-    } else if(props.nameFilter) {
+    }, [nameFilter, dateFilter, props.dateFilter.startDate, props.dateFilter.endDate, dispatch]);
 
-      filteredCampaigns = campaigns.filter((campaign) => {
-        return campaign.name.toLowerCase().includes(props.nameFilter.toLowerCase())
-      });
+    useEffect(() => {
+      setIsFilterApplied(true);
 
-    } else {
-      filteredCampaigns = [...campaigns];
-    }
-    
+      if(nameFilter === null) {
+        setIsFilterApplied(false);
+      }
+      dispatch({type: campaignListContants.FILTER_CAMPAIGN_BY_NAME, data: { name: nameFilter, dateRange: dateFilter  }});
+
+  }, [nameFilter, dispatch]);
 
     return (
         <Box sx={{ height: 600, 
@@ -151,7 +158,9 @@ export default function CampaignList(props) {
                   'columnHeaderTitle': {fontWeight: '600'},
                   'columnSeparator': { borderWidth: 0 }
                 }}>
-            { filteredCampaigns && <DataGrid
+            { !campaigns && <CircularProgress /> }
+            { campaigns &&  campaigns.length === 0 && <p>No campaigns found.</p>}
+            { campaigns && campaigns.length > 0 && <DataGrid
                 initialState={{
                     columns: {
                     columnVisibilityModel: {
@@ -160,7 +169,7 @@ export default function CampaignList(props) {
                     },
                     },
                 }}
-                rows={filteredCampaigns}
+                rows={campaigns}
                 columns={columns}
                 pageSize={10}
                 rowsPerPageOptions={[10]}
